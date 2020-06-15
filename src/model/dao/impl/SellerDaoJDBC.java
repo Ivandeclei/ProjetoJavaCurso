@@ -56,17 +56,8 @@ public class SellerDaoJDBC implements SellerDao{
 			
 			if(rs.next()) {
 				//instancia o resultset que vem no formato de tabela em Orientação a OBjeto
-				Department dep = new Department();
-				dep.setId(rs.getInt("DepartmentId"));
-				dep.setName(rs.getString("DepName"));
-				
-				Seller obj = new Seller();
-				obj.setId(rs.getInt("Id"));
-				obj.setName(rs.getString("Name"));
-				obj.setEmail(rs.getString("Email"));
-				obj.setBirhDate(rs.getDate("BirthDate"));
-				obj.setBaseSalary(rs.getDouble("BaseSalary"));
-				obj.setDepartment(dep);//a associacao deve ser feita pasando o objeto todo como na classe espera um objeto de associação
+				Department dep = instantiateDeparment(rs);
+				Seller obj = instantiateSeller(rs, dep);
 				return obj;
 				
 			}
@@ -80,6 +71,24 @@ public class SellerDaoJDBC implements SellerDao{
 			DB.closeStatement(st);
 			DB.closeResultSet(rs);
 		}
+	}
+
+	private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
+		Seller obj = new Seller();
+		obj.setId(rs.getInt("Id"));
+		obj.setName(rs.getString("Name"));
+		obj.setEmail(rs.getString("Email"));
+		obj.setBirhDate(rs.getDate("BirthDate"));
+		obj.setBaseSalary(rs.getDouble("BaseSalary"));
+		obj.setDepartment(dep);//a associacao deve ser feita pasando o objeto todo como na classe espera um objeto de associação
+		return obj;
+	}
+
+	private Department instantiateDeparment(ResultSet rs) throws SQLException {
+		Department dep = new Department();
+		dep.setId(rs.getInt("DepartmentId"));
+		dep.setName(rs.getString("DepName"));
+		return dep;
 	}
 
 	@Override
